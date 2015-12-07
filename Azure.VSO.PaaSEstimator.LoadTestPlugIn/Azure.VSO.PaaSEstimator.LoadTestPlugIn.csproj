@@ -82,11 +82,20 @@
   <ItemGroup>
     <Compile Include="ARMPaaSResources.cs" />
     <Compile Include="LoadTestSnapshot.cs" />
+    <Compile Include="Models\ServerFarmData.cs" />
+    <Compile Include="Models\WebSite.cs" />
     <Compile Include="PaaSEstimator.cs" />
     <Compile Include="PaaSResources\ArmGateway.cs" />
     <Compile Include="PaaSResources\AzureADOAuthGateway.cs" />
     <Compile Include="PaaSResources\IOathGateway.cs" />
+    <Compile Include="PaaSResources\IRateCardGateway.cs" />
+    <Compile Include="PaaSResources\IResourceGateway.cs" />
+    <Compile Include="PaaSResources\IServerFarmGateway.cs" />
+    <Compile Include="PaaSResources\IWebSiteGateway.cs" />
     <Compile Include="PaaSResources\PaaSWebSites.cs" />
+    <Compile Include="PaaSResources\RateCardGateway.cs" />
+    <Compile Include="PaaSResources\ServerFarmGateway.cs" />
+    <Compile Include="Processors\WebSiteProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +104,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

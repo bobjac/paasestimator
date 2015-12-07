@@ -12,10 +12,11 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.PaaSResources.Tests
     public class WebSiteGatewayTests
     {
         [TestMethod()]
-        public void GetWebSiteDataTest()
+        public void GetWebSiteResourceTest()
         {
-            string resource = "https://management.azure.com/subscriptions/7840d2da-7eb0-4caa-a8af-e69f387c3557/resourceGroups/p20/providers/Microsoft.Web/sites/bobjacp20-1/instances?api-version=2015-08-01";
-
+            //string resource = "https://management.azure.com/subscriptions/7840d2da-7eb0-4caa-a8af-e69f387c3557/resourceGroups/p20/providers/Microsoft.Web/sites/bobjacp20-1/instances?api-version=2015-08-01";
+            string serverFarmResource = "https://management.azure.com/subscriptions/7840d2da-7eb0-4caa-a8af-e69f387c3557/resourceGroups/p20/providers/Microsoft.Web/serverfarms/p20?api-version=2015-08-01";
+            string resource = "https://management.azure.com/subscriptions/7840d2da-7eb0-4caa-a8af-e69f387c3557/resourceGroups/p20/providers/Microsoft.Web/sites/bobjacp20-1?api-version=2015-08-01";
             var azureADOAuthGateway = new AzureADOAuthGateway
             {
                 AuthenticationAuthority = "https://login.windows.net",
@@ -26,7 +27,7 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.PaaSResources.Tests
             };
 
             var webSiteGateway = new WebSiteGateway(azureADOAuthGateway);
-            string webSiteData = webSiteGateway.GetResourceAsString(resource).Result;
+            string webSiteData = webSiteGateway.GetResourceAsString(new Uri(resource)).Result;
 
             Assert.IsNotNull(webSiteData);
         }

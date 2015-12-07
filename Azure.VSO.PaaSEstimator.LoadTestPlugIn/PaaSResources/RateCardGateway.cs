@@ -6,17 +6,19 @@ using System.Threading.Tasks;
 
 namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.PaaSResources
 {
-    public class WebSiteGateway : ArmResourceGateway, IWebSiteGateway
+    public class RateCardGateway : ArmResourceGateway, IRateCardGateway
     {
-        public WebSiteGateway(IOathGateway oAuthGateway)
+        public RateCardGateway(IOathGateway oAuthGateway)
             :base(oAuthGateway)
         {
 
         }
 
-        public Task<string> GetWebSiteData(Uri websiteUri)
+        public string GetRateCardData(Uri rateCardUri)
         {
-            return GetResourceAsString(websiteUri);
+            return GetResourceAsString(rateCardUri).Result;
         }
+
+       
     }
 }
