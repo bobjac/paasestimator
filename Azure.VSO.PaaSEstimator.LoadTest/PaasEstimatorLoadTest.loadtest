@@ -1,18 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<LoadTest Name="LoadTest1" Description="" Owner="" storage="c:\dev\project20\paasestimator\azure.vso.paasestimator.loadtest\loadtest1.loadtest" Priority="2147483647" Enabled="true" CssProjectStructure="" CssIteration="" DeploymentItemsEditable="" WorkItemIds="" TraceLevel="None" CurrentRunConfig="Run Settings1" Id="434a77f7-9ab1-4f47-9d7e-1d7dc87070d2" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+<LoadTest Name="PaasEstimatorLoadTest" Description="" Owner="" storage="c:\dev\project20\paasestimator\azure.vso.paasestimator.loadtest\paasestimatorloadtest.loadtest" Priority="2147483647" Enabled="true" CssProjectStructure="" CssIteration="" DeploymentItemsEditable="" WorkItemIds="" TraceLevel="None" CurrentRunConfig="Run Settings1" Id="434a77f7-9ab1-4f47-9d7e-1d7dc87070d2" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
   <Scenarios>
-    <Scenario Name="Scenario1" DelayBetweenIterations="0" PercentNewUsers="0" IPSwitching="false" TestMixType="PercentageOfTestsStarted" ApplyDistributionToPacingDelay="true" MaxTestIterations="0" DisableDuringWarmup="false" DelayStartTime="0" AllowedAgents="">
+    <Scenario Name="Scenario2" DelayBetweenIterations="0" PercentNewUsers="0" IPSwitching="false" TestMixType="PercentageOfTestsStarted" ApplyDistributionToPacingDelay="true" MaxTestIterations="0" DisableDuringWarmup="false" DelayStartTime="0" AllowedAgents="">
       <ThinkProfile Value="0.2" Pattern="NormalDistribution" />
       <LoadProfile Pattern="Constant" InitialUsers="25" />
+      <TestMix>
+        <TestProfile Name="PaaSEstimatorWebTest" Path="paasestimatorwebtest.webtest" Id="82b91776-53ea-49eb-bb22-4d87e5af5d0b" Percentage="100" Type="Microsoft.VisualStudio.TestTools.WebStress.DeclarativeWebTestElement, Microsoft.VisualStudio.QualityTools.LoadTest, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+      </TestMix>
       <BrowserMix>
         <BrowserProfile Percentage="100">
-          <Browser Name="Chrome 2" MaxConnections="6">
+          <Browser Name="Internet Explorer 9.0" MaxConnections="6">
             <Headers>
-              <Header Name="User-Agent" Value="Mozilla/5.0 (Windows; U; Windows NT 5.1;) AppleWebKit/530.1 (KHTML, like Gecko) Chrome/2.0.169.1 Safari/530.1" />
+              <Header Name="User-Agent" Value="Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)" />
               <Header Name="Accept" Value="*/*" />
               <Header Name="Accept-Language" Value="{{$IEAcceptLanguage}}" />
-              <Header Name="Accept-Encoding" Value="gzip,deflate" />
-              <Header Name="Accept-Charset" Value="ISO-8859-1,*,utf-8" />
+              <Header Name="Accept-Encoding" Value="GZIP" />
             </Headers>
           </Browser>
         </BrowserProfile>

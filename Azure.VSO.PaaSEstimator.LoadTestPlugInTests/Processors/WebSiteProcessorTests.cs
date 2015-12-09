@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Azure.VSO.PaaSEstimator.LoadTestPlugIn.PaaSResources;
+using Newtonsoft.Json;
 
 namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors.Tests
 {
@@ -22,11 +23,14 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors.Tests
             var webSiteGateway = GetWebSiteGateway();
             var serverFarmGateway = GetServerFarmGateway();
             var rateCardGateway = GetRateCardGateway();
+            var webSiteInstancesGateway = GetWebSiteInstancesGateway();
 
-            var webSiteProcessor = new WebSiteProcessor(webSiteGateway, serverFarmGateway, rateCardGateway);
+            var webSiteProcessor = new WebSiteProcessor(webSiteGateway, serverFarmGateway, rateCardGateway, webSiteInstancesGateway);
 
             Uri webSiteUri = new Uri("https://management.azure.com/subscriptions/7840d2da-7eb0-4caa-a8af-e69f387c3557/resourceGroups/p20/providers/Microsoft.Web/sites/bobjacp20-1?api-version=2015-08-01");
             var webSiteData = webSiteProcessor.GetWebSiteData(webSiteUri).Result;
+
+            string serializedWebSiteData = JsonConvert.SerializeObject(webSiteData);
 
             Assert.IsNotNull(webSiteData);
             Assert.AreEqual<string>("bobjacp20-1", webSiteData.SiteName);
@@ -40,6 +44,11 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors.Tests
         private WebSiteGateway GetWebSiteGateway()
         {
             return new WebSiteGateway(GetAzureADOAuthGateway());
+        }
+
+        private WebSiteInstancesGateway GetWebSiteInstancesGateway()
+        {
+            return new WebSiteInstancesGateway(GetAzureADOAuthGateway());
         }
 
         private ServerFarmGateway GetServerFarmGateway()
