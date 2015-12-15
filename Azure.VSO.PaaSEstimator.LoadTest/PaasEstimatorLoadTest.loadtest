@@ -444,6 +444,7 @@
         <ContextParameter Name="ClientId" Value="78316e80-f898-43f3-9823-f652d979dc0f" />
         <ContextParameter Name="ClientKey" Value="+9IaNb9TTwmAkAjayZheZY1ZQJYohWtPCpMrFRmoRcg=" />
         <ContextParameter Name="TenantId" Value="4ac2c945-49d5-4b59-8a70-a08dffe43dba" />
+        <ContextParameter Name="ResourceGroupUri" Value="https://management.azure.com/subscriptions/7840d2da-7eb0-4caa-a8af-e69f387c3557/resourceGroups/p20?api-version=2014-04-01" />
       </ContextParameters>
     </RunConfiguration>
   </RunConfigurations>

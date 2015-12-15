@@ -19,30 +19,26 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn
         private string storageAccountConnectionString;
 
         private LoadTest loadTest;
-       // private string connectionString;
         private int heartbeatCount;
-       // private CloudStorageAccount storageAccount;
-       // private CloudTableClient tableClient;
         private Guid loadTestRun;
         private ILoadTestSnapshotRepository loadTestSnapshotRepository;
-        private WebSiteProcessor webSiteProcessor;
+        //private WebSiteProcessor webSiteProcessor;
 
-        private Uri webSiteUri; 
+        private ResourceGroupProcessor respurceGroupProcessor;
+
+        private Uri webSiteUri;
+        private Uri resourceGroupUri;
 
         private string clientId;
         private string key;
-       // private string authenticationAuthority;
-       // private string resource;
         private string tenantId;
 
         private const string CLIENT_ID_PARAM = "ClientId";
-        //private const string CLIENT_ID_PARAM = "78316e80-f898-43f3-9823-f652d979dc0f";
         private const string CLIENT_KEY_PARAM = "ClientKey";
-        //private const string KEY = "+9IaNb9TTwmAkAjayZheZY1ZQJYohWtPCpMrFRmoRcg=";
         private const string AUTHENTICATION_AUTHORITY = "https://login.windows.net";
         private const string RESOURCE = "https://management.core.windows.net/";
         private const string TENANT_ID_PARAM = "TenantId";
-        //private const string TENANT_ID_PARAM = "4ac2c945-49d5-4b59-8a70-a08dffe43dba";
+        private const string RESOURCE_GROUP_URI_PARAM = "ResourceGroupUri";
 
         public void Initialize(LoadTest loadTest)
         {
@@ -54,11 +50,28 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn
             InitializeWebSiteUri();
             InitializeLoadestSnapshotRepository();
 
-            InitializeWebSiteProcessor();
+            InitializeResourceGroupUri();
+            InitializeResourceGroupProcessor();
+
+            //InitializeWebSiteProcessor();
 
             this.loadTest.LoadTestStarting += LoadTest_LoadTestStarting;
             this.loadTest.Heartbeat += LoadTest_Heartbeat;
             this.loadTest.LoadTestFinished += LoadTest_LoadTestFinished;
+        }
+
+        private void InitializeResourceGroupUri()
+        {
+            if (this.loadTest.Context.ContainsKey(RESOURCE_GROUP_URI_PARAM))
+            {
+                this.resourceGroupUri = new Uri(this.loadTest.Context[RESOURCE_GROUP_URI_PARAM] as string);
+            }
+        }
+
+        private void InitializeResourceGroupProcessor()
+        {
+            var resourceGroupGateway = new ResourceGroupGateway(GetAzureADOAuthGateway());
+            this.respurceGroupProcessor = new ResourceGroupProcessor(this.loadTestRun, this.loadTest.Name, resourceGroupGateway, this.loadTestSnapshotRepository);
         }
 
         private void InitializeAzureADApp()
@@ -82,7 +95,6 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn
         private void InitializeLoadestSnapshotRepository()
         {
             const string STORAGE_ACCOUNT_CONNECTION_STRING = "StorageAccountConnectionString";
-            //string storageAccountConnectionString = "DefaultEndpointsProtocol=https;AccountName=bobjacp20;AccountKey=ydBjzHK3apIFfIXeIY7pau/gwX9zVJyMZrBvdsAkYjJF/2qgCLEMzLb3B9wLB0luBVSlW2KWBh+RaqR42jz/bQ==;BlobEndpoint=https://bobjacp20.blob.core.windows.net/;TableEndpoint=https://bobjacp20.table.core.windows.net/;QueueEndpoint=https://bobjacp20.queue.core.windows.net/;FileEndpoint=https://bobjacp20.file.core.windows.net/";
             if (this.loadTest.Context.ContainsKey(STORAGE_ACCOUNT_CONNECTION_STRING))
             {
                 this.storageAccountConnectionString = this.loadTest.Context[STORAGE_ACCOUNT_CONNECTION_STRING] as string;
@@ -126,17 +138,17 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn
             AddLoadTestSnapshot(loadTestSnapshot);
         }
 
-        private void InitializeWebSiteProcessor()
-        {
-            IOathGateway oauthGateway = GetAzureADOAuthGateway();
-            IRateCardGateway rateCardGateway = new RateCardGateway(oauthGateway);
-            IWebSiteInstancesGateway webSiteInstancesGateway = new WebSiteInstancesGateway(oauthGateway);
-            IServerFarmGateway serverFarmGateway = new ServerFarmGateway(oauthGateway);
-            IWebSiteGateway webSiteGateway = new WebSiteGateway(oauthGateway);
-            ILoadTestSnapshotRepository loadTestSnapshotRepository = new AzureTableLoadTestSnapshotRepository(this.storageAccountConnectionString);
+        //private void InitializeWebSiteProcessor()
+        //{
+        //    IOathGateway oauthGateway = GetAzureADOAuthGateway();
+        //    IRateCardGateway rateCardGateway = new RateCardGateway(oauthGateway);
+        //    IWebSiteInstancesGateway webSiteInstancesGateway = new WebSiteInstancesGateway(oauthGateway);
+        //    IServerFarmGateway serverFarmGateway = new ServerFarmGateway(oauthGateway);
+        //    IWebSiteGateway webSiteGateway = new WebSiteGateway(oauthGateway);
+        //    ILoadTestSnapshotRepository loadTestSnapshotRepository = new AzureTableLoadTestSnapshotRepository(this.storageAccountConnectionString);
 
-            this.webSiteProcessor = new WebSiteProcessor(this.loadTestRun, this.loadTest.Name, webSiteGateway, serverFarmGateway, rateCardGateway, webSiteInstancesGateway, loadTestSnapshotRepository);
-        }
+        //    this.webSiteProcessor = new WebSiteProcessor(this.loadTestRun, this.loadTest.Name, webSiteGateway, serverFarmGateway, rateCardGateway, webSiteInstancesGateway, loadTestSnapshotRepository);
+        //}
         private IOathGateway GetAzureADOAuthGateway()
         {
             return new AzureADOAuthGateway
@@ -156,14 +168,16 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn
 
         private void AddLoadTestFinishedSnapshot()
         {
-            var webSiteData = this.webSiteProcessor.GetPaaSResourceData(this.webSiteUri).Result;
-            string webSiteDataState = JsonConvert.SerializeObject(webSiteData);
+            //var webSiteData = this.webSiteProcessor.GetPaaSResourceData(this.webSiteUri).Result;
+            //string webSiteDataState = JsonConvert.SerializeObject(webSiteData);
 
-            var loadTestSnapshot = new LoadTestSnapShot(this.loadTestRun);
-            loadTestSnapshot.LoadTestName = this.loadTest.Name;
-            loadTestSnapshot.EventMessage = "Load Test Complete";
-            loadTestSnapshot.InstanceState = webSiteDataState;
-            AddLoadTestSnapshot(loadTestSnapshot);
+            //var loadTestSnapshot = new LoadTestSnapShot(this.loadTestRun);
+            //loadTestSnapshot.LoadTestName = this.loadTest.Name;
+            //loadTestSnapshot.EventMessage = "Load Test Complete";
+            //loadTestSnapshot.InstanceState = webSiteDataState;
+            //AddLoadTestSnapshot(loadTestSnapshot);
+
+            this.respurceGroupProcessor.CaptureSnapshots(this.resourceGroupUri, "Load Test Complete");
         }
 
         private void LoadTest_LoadTestStarting(object sender, EventArgs e)
@@ -174,15 +188,17 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn
 
         private void AddLoadTestStartingSnapshot()
         {
-            var webSiteData = this.webSiteProcessor.GetPaaSResourceData(this.webSiteUri).Result;
-            string webSiteDataState = JsonConvert.SerializeObject(webSiteData);
+            //var webSiteData = this.webSiteProcessor.GetPaaSResourceData(this.webSiteUri).Result;
+            //string webSiteDataState = JsonConvert.SerializeObject(webSiteData);
 
-            var loadTestSnapshot = new LoadTestSnapShot(this.loadTestRun);
-            loadTestSnapshot.LoadTestName = this.loadTest.Name;
-            loadTestSnapshot.EventMessage = "Load Test Starting";
-            loadTestSnapshot.InstanceState = webSiteDataState;
+            //var loadTestSnapshot = new LoadTestSnapShot(this.loadTestRun);
+            //loadTestSnapshot.LoadTestName = this.loadTest.Name;
+            //loadTestSnapshot.EventMessage = "Load Test Starting";
+            //loadTestSnapshot.InstanceState = webSiteDataState;
 
-            AddLoadTestSnapshot(loadTestSnapshot);
+            //AddLoadTestSnapshot(loadTestSnapshot);
+
+            this.respurceGroupProcessor.CaptureSnapshots(this.resourceGroupUri, "Load Test Starting");
         }
 
         private string GetJson()
@@ -210,14 +226,16 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn
 
         private void AddHeartbeatSnapshot()
         {
-            var webSiteData = this.webSiteProcessor.GetPaaSResourceData(this.webSiteUri).Result;
-            string webSiteDataState = JsonConvert.SerializeObject(webSiteData);
+            //var webSiteData = this.webSiteProcessor.GetPaaSResourceData(this.webSiteUri).Result;
+            //string webSiteDataState = JsonConvert.SerializeObject(webSiteData);
 
-            var loadTestSnapshot = new LoadTestSnapShot(this.loadTestRun);
-            loadTestSnapshot.LoadTestName = this.loadTest.Name;
-            loadTestSnapshot.EventMessage = "Heartbeat";
-            loadTestSnapshot.InstanceState = webSiteDataState;
-            AddLoadTestSnapshot(loadTestSnapshot);
+            //var loadTestSnapshot = new LoadTestSnapShot(this.loadTestRun);
+            //loadTestSnapshot.LoadTestName = this.loadTest.Name;
+            //loadTestSnapshot.EventMessage = "Heartbeat";
+            //loadTestSnapshot.InstanceState = webSiteDataState;
+            //AddLoadTestSnapshot(loadTestSnapshot);
+
+            this.respurceGroupProcessor.CaptureSnapshots(this.resourceGroupUri, "Heartbeat");
         }
     }
 }
