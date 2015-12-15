@@ -7,31 +7,42 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Azure.VSO.PaaSEstimator.LoadTestPlugIn.Models;
 using Azure.VSO.PaaSEstimator.LoadTestPlugIn.PaaSResources;
+using Azure.VSO.PaaSEstimator.LoadTestPlugIn.Repositories;
 
 namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors
 {
-    public class WebSiteProcessor
+    public class WebSiteProcessor : IPaasResourceProcessor
     {
         private const string AZURE_REST_AUTHORITY = "https://management.azure.com";
 
+        private Guid loadTestRun;
+        private string loadTestName;
         private IWebSiteGateway webSiteGateway;
         private IServerFarmGateway serverFarmGateway;
         private IRateCardGateway rateCardGateway;
         private IWebSiteInstancesGateway webSiteInstancesGateway;
 
-        public WebSiteProcessor(IWebSiteGateway webSiteGateway, 
+        private ILoadTestSnapshotRepository loadTestSnapshotRepository; 
+
+        public WebSiteProcessor(Guid loadTestRun, 
+            string loadTestName,
+            IWebSiteGateway webSiteGateway, 
             IServerFarmGateway serverFarmGateway, 
             IRateCardGateway rateCardGateway,
-            IWebSiteInstancesGateway webSiteInstancesGateway)
+            IWebSiteInstancesGateway webSiteInstancesGateway,
+            ILoadTestSnapshotRepository loadTestSnapshotRepository)
         {
+            this.loadTestRun = loadTestRun;
+            this.loadTestName = loadTestName;
             this.webSiteGateway = webSiteGateway;
             this.serverFarmGateway = serverFarmGateway;
             this.rateCardGateway = rateCardGateway;
             this.webSiteInstancesGateway = webSiteInstancesGateway;
+            this.loadTestSnapshotRepository = loadTestSnapshotRepository;
         }
 
 
-        public async Task<WebSiteData> GetWebSiteData(Uri webSiteUri)
+        public async Task<WebSiteData> GetPaaSResourceData(Uri webSiteUri)
         {
             string webSiteData = await this.webSiteGateway.GetWebSiteData(webSiteUri);
             dynamic dynWebSiteData = JsonConvert.DeserializeObject(webSiteData);
@@ -40,26 +51,14 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors
             string serverFarmId = dynWebSiteData.properties.serverFarmId;
             string siteName = dynWebSiteData.properties.name;
 
-            int capacity = 0;
-            int listInstances = 0;
-
             ServerFarmData sfd = GetServerFarmData(serverFarmId);
-
-            capacity = int.Parse(sfd.Capacity);
 
             Uri instancesUri = GetWebSiteInstancesUri(webSiteUri);
             string webSiteInstancesData = await this.webSiteInstancesGateway.GetWebSiteInstancesData(instancesUri);
             WebSiteInstancesPayload webSiteInstancePayload = JsonConvert.DeserializeObject<WebSiteInstancesPayload>(webSiteInstancesData);
+
             List<string> instances = new List<string>();
             webSiteInstancePayload.value.ForEach(x => instances.Add(x.name));
-
-            listInstances = instances.Count;
-
-            bool areSame = false;
-            if (capacity == listInstances)
-            {
-                areSame = true;
-            }
 
             Uri rateCardUri = GetRateCardUri(webSiteUri);
             RateCardPayload rateCardPayload = GetRateCardPayload(rateCardUri);
@@ -83,15 +82,6 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors
             var rateCardData = this.rateCardGateway.GetRateCardData(rateCardUri);
             RateCardPayload payload = JsonConvert.DeserializeObject<RateCardPayload>(rateCardData);
             return payload;
-        }
-
-        private List<WebSiteInstanceData> GetWebSiteInstances(Uri webSiteInstancesUri)
-        {
-            List<WebSiteInstanceData> webSiteInstances = new List<WebSiteInstanceData>();
-
-
-
-            return webSiteInstances;
         }
 
         private ServerFarmData GetServerFarmData(string serverFarmId)
@@ -140,6 +130,24 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors
                 webSiteUri.AbsoluteUri.Substring(0, index));
 
             return new Uri(rateCardUriString);
+        }
+
+        public Task<string> GetPaaSResourceJson(Uri resourceUri)
+        {
+            return Task.FromResult(JsonConvert.SerializeObject(GetPaaSResourceData(resourceUri)));
+        }
+
+        public void CaptureSnapshots(Uri resourceUri, string captureEvent)
+        {
+            var webSiteData = GetPaaSResourceData(resourceUri).Result;
+            string webSiteDataState = JsonConvert.SerializeObject(webSiteData);
+
+            var loadTestSnapshot = new LoadTestSnapShot(this.loadTestRun);
+            loadTestSnapshot.LoadTestName = this.loadTestName;
+            loadTestSnapshot.EventMessage = captureEvent;
+            loadTestSnapshot.InstanceState = webSiteDataState;
+
+            this.loadTestSnapshotRepository.AddLoadTestSnapshot(loadTestSnapshot);
         }
     }
 }

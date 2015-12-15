@@ -95,15 +95,22 @@
     <Compile Include="PaaSResources\IOathGateway.cs" />
     <Compile Include="PaaSResources\IRateCardGateway.cs" />
     <Compile Include="PaaSResources\IResourceGateway.cs" />
+    <Compile Include="PaaSResources\IResourceGroupGateway.cs" />
     <Compile Include="PaaSResources\IServerFarmGateway.cs" />
     <Compile Include="PaaSResources\IWebSiteGateway.cs" />
     <Compile Include="PaaSResources\IWebSiteInstancesGateway.cs" />
     <Compile Include="PaaSResources\PaaSWebSites.cs" />
     <Compile Include="PaaSResources\RateCardGateway.cs" />
+    <Compile Include="PaaSResources\ResourceGroupGateway.cs" />
     <Compile Include="PaaSResources\ServerFarmGateway.cs" />
     <Compile Include="PaaSResources\WebSiteInstancesGateway.cs" />
+    <Compile Include="Processors\IPaasResourceProcessor.cs" />
+    <Compile Include="Processors\PaaSResourceProcessorFactory.cs" />
+    <Compile Include="Processors\ResourceGroupProcessor.cs" />
     <Compile Include="Processors\WebSiteProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\ILoadTestSnapshotRepository.cs" />
+    <Compile Include="Repositories\AzureTableLoadTestSnapshotRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PaaSResources\WebSiteGateway.cs" />

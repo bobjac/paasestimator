@@ -57,7 +57,9 @@
   <ItemGroup>
     <Compile Include="PaaSResources\AzureADOAuthGatewayTests.cs" />
     <Compile Include="PaaSResources\RateCardGatewayTests.cs" />
+    <Compile Include="PaaSResources\ResourceGroupGatewayTests.cs" />
     <Compile Include="PaaSResources\WebSiteGatewayTests.cs" />
+    <Compile Include="Processors\ResourceGroupProcessorTests.cs" />
     <Compile Include="Processors\WebSiteProcessorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Azure.VSO.PaaSEstimator.LoadTestPlugIn.PaaSResources;
 using Newtonsoft.Json;
+using Azure.VSO.PaaSEstimator.LoadTestPlugIn.Repositories;
 
 namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors.Tests
 {
@@ -25,12 +26,12 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors.Tests
             var rateCardGateway = GetRateCardGateway();
             var webSiteInstancesGateway = GetWebSiteInstancesGateway();
 
-            var webSiteProcessor = new WebSiteProcessor(webSiteGateway, serverFarmGateway, rateCardGateway, webSiteInstancesGateway);
+            ILoadTestSnapshotRepository loadTestSnapshotRepository = GetLoadTestSnapshotRepository();
+
+            var webSiteProcessor = new WebSiteProcessor(Guid.NewGuid(), "GetWebSiteDataTest()", webSiteGateway, serverFarmGateway, rateCardGateway, webSiteInstancesGateway, loadTestSnapshotRepository);
 
             Uri webSiteUri = new Uri("https://management.azure.com/subscriptions/7840d2da-7eb0-4caa-a8af-e69f387c3557/resourceGroups/p20/providers/Microsoft.Web/sites/bobjacp20-1?api-version=2015-08-01");
-            var webSiteData = webSiteProcessor.GetWebSiteData(webSiteUri).Result;
-
-            string serializedWebSiteData = JsonConvert.SerializeObject(webSiteData);
+            var webSiteData = webSiteProcessor.GetPaaSResourceData(webSiteUri).Result;
 
             Assert.IsNotNull(webSiteData);
             Assert.AreEqual<string>("bobjacp20-1", webSiteData.SiteName);
@@ -71,6 +72,12 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors.Tests
             }
 
             return this.oauthGateway;
+        }
+
+        private ILoadTestSnapshotRepository GetLoadTestSnapshotRepository()
+        {
+            string storageAccountConnectionString = "DefaultEndpointsProtocol=https;AccountName=bobjacp20;AccountKey=ydBjzHK3apIFfIXeIY7pau/gwX9zVJyMZrBvdsAkYjJF/2qgCLEMzLb3B9wLB0luBVSlW2KWBh+RaqR42jz/bQ==;BlobEndpoint=https://bobjacp20.blob.core.windows.net/;TableEndpoint=https://bobjacp20.table.core.windows.net/;QueueEndpoint=https://bobjacp20.queue.core.windows.net/;FileEndpoint=https://bobjacp20.file.core.windows.net/";
+            return new AzureTableLoadTestSnapshotRepository(storageAccountConnectionString);
         }
     }
 }
