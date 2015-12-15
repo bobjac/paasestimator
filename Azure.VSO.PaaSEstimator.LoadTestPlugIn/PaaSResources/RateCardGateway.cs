@@ -18,7 +18,5 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.PaaSResources
         {
             return GetResourceAsString(rateCardUri).Result;
         }
-
-       
     }
 }

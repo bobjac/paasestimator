@@ -19,18 +19,6 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.PaaSResources
             return this.GetResourceAsString(websiteUri);
         }
 
-        //public IOathGateway OAuthGateway
-        //{
-        //    get
-        //    {
-        //        return this.OAuthGateway;
-        //    }
-        //    set
-        //    {
-        //        this.OAuthGateway = value;
-        //    }
-        //}
-
         public Task<string> GetWebSitesData(Uri webSitesUri)
         {
             return this.GetResourceAsString(webSitesUri);

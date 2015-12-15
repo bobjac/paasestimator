@@ -16,24 +16,12 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.PaaSResources
             this.OAuthGateway = oAuthGateway;
         }
 
-        //public async Task<string> GetResourceAsString(string resource)
-        //{
-        //    var httpClient = new HttpClient();
-        //    httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", this.OAuthGateway.GetOAuthToken());
-        //    HttpResponseMessage responseMessage = await httpClient.GetAsync(resource);
-
-        //    string s = await responseMessage.Content.ReadAsStringAsync();
-        //    return s;
-        //}
-
         public async Task<string> GetResourceAsString(Uri resource)
         {
             var httpClient = new HttpClient();
-
             httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", this.OAuthGateway.GetOAuthToken());
 
             HttpResponseMessage responseMessage = await httpClient.GetAsync(resource);
-
             return await responseMessage.Content.ReadAsStringAsync();
         }
     }
