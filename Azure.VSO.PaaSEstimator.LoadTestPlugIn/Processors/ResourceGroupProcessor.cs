@@ -10,13 +10,38 @@ using Newtonsoft.Json;
 
 namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors
 {
+    /// <summary>
+    /// An IPaasResourceProcessor that captures snapshots of all paas resources in a resource group
+    /// </summary>
     public class ResourceGroupProcessor : IPaasResourceProcessor
     {
+        /// <summary>
+        /// The unique identifier of the load test
+        /// </summary>
         Guid loadTestRun;
+
+        /// <summary>
+        /// The name of the load test
+        /// </summary>
         private string loadTestName;
+
+        /// <summary>
+        /// Gateway class used to make REST call to ARM
+        /// </summary>
         private IResourceGroupGateway resourceGroupGateway;
+
+        /// <summary>
+        /// Repository class used for storing load test snapshots
+        /// </summary>
         private ILoadTestSnapshotRepository loadTestSnapshotRepository;
 
+        /// <summary>
+        /// Public constructor
+        /// </summary>
+        /// <param name="loadTestRun">Unique identifier of the load test</param>
+        /// <param name="loadTestName">The name of the load test</param>
+        /// <param name="resourceGroupGateway">The gateway class used to make the ARM REST calls</param>
+        /// <param name="loadTestSnapshotRepository">The repository class used to storage load test snapshots</param>
         public ResourceGroupProcessor(Guid loadTestRun, 
             string loadTestName,
             IResourceGroupGateway resourceGroupGateway, 
@@ -28,6 +53,11 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors
             this.loadTestSnapshotRepository = loadTestSnapshotRepository;
         }
 
+        /// <summary>
+        /// Gets a list of web site names from json data returned from the ARM rest call
+        /// </summary>
+        /// <param name="webSitesJsonData">Json data returned from the ARM rest call asking for the web sites in a resource group</param>
+        /// <returns>IEnumerable<string> containing the names of the web sites</string></returns>
         private IEnumerable<string> GetWebSiteNames(string webSitesJsonData)
         {
             List<string> webSiteNames = new List<string>();
@@ -42,16 +72,31 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors
             return webSiteNames;
         }
 
+        /// <summary>
+        /// Returns the Json string representing the resource group
+        /// </summary>
+        /// <param name="resourceUri">The uri of the resource group</param>
+        /// <returns>The json string</returns>
         public Task<string> GetPaaSResourceJson(Uri resourceUri)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Captures the snapshots of the resources in the resource group
+        /// </summary>
+        /// <param name="resourceUri">The resource group uri</param>
+        /// <param name="captureEvent">An event associated with the capture</param>
         public void CaptureSnapshots(Uri resourceUri, string captureEvent)
         {
             CaptureWebSiteSnapshots(resourceUri, captureEvent);
         }
 
+        /// <summary>
+        /// Captures snapshots of the websites that exist in the resource group
+        /// </summary>
+        /// <param name="resourceGroupUri">The resource group uri</param>
+        /// <param name="captureEvent">An event associated with the capture</param>
         private void CaptureWebSiteSnapshots(Uri resourceGroupUri, string captureEvent)
         {
             string resourceGroupAbsoluteUri = resourceGroupUri.AbsoluteUri;
