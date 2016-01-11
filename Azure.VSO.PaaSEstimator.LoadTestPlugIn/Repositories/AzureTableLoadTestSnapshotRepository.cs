@@ -27,5 +27,18 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Repositories
             var insertOperation = TableOperation.Insert(loadTestSnapshot);
             TableResult result = table.Execute(insertOperation);
         }
+
+        public IEnumerable<LoadTestSnapShot> GetLoadTestSnapshots(string partitionKey)
+        {
+            var table = this.tableClient.GetTableReference("loadTestSnapshot");
+
+            if (!table.Exists())
+            {
+                throw new InvalidOperationException("You cannot retrieve snapshots until the table is created");
+            }
+
+            var tableQuery = new TableQuery<LoadTestSnapShot>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey));
+            return table.ExecuteQuery(tableQuery);
+        }
     }
 }

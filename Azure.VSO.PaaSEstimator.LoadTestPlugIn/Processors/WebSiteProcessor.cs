@@ -234,9 +234,13 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors
             var loadTestSnapshot = new LoadTestSnapShot(this.loadTestRun);
             loadTestSnapshot.LoadTestName = this.loadTestName;
             loadTestSnapshot.EventMessage = captureEvent;
+            loadTestSnapshot.ResourceType = "WebSite";
             loadTestSnapshot.InstanceState = webSiteDataState;
+            loadTestSnapshot.ResourceId = webSiteData.WebSiteUri.ToString();
 
             this.loadTestSnapshotRepository.AddLoadTestSnapshot(loadTestSnapshot);
         }
+
+        
     }
 }

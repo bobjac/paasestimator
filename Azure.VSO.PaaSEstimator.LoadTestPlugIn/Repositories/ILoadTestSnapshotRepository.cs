@@ -9,5 +9,6 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Repositories
     public interface ILoadTestSnapshotRepository
     {
         void AddLoadTestSnapshot(LoadTestSnapShot loadTestSnapshot);
+        IEnumerable<LoadTestSnapShot> GetLoadTestSnapshots(string partitionKey);
     }
 }

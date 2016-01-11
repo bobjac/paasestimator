@@ -22,6 +22,8 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn
         }
 
         public string LoadTestName { get; set; }
+        public string ResourceId { get; set; }
+        public string ResourceType { get; set; }
         public string EventMessage { get; set; }
         public string InstanceState { get; set; }
     }
