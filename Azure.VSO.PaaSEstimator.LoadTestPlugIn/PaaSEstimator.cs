@@ -51,9 +51,19 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn
         private const string RESOURCE_GROUP_URI_PARAM = "ResourceGroupUri";
 
         /// <summary>
+        /// The context parameter representing connection string of the ResourceGroupCostEstimateRepository
+        /// </summary>
+        private const string RESOURCE_GROUP_COST_ESTIMATE_CONNECTIONSTRING = "ResourceGroupCostEstimateConnectionString";
+
+        /// <summary>
         /// The connection string of the storage account used to store the snapshots 
         /// </summary>
         private string storageAccountConnectionString;
+
+        /// <summary>
+        /// The connection string of the long term storage of Resource Group Cost Estimates
+        /// </summary>
+        private string resourceGroupCostEstimateConnectionString;
 
         /// <summary>
         /// The load test object passed in from VSO
@@ -118,6 +128,7 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn
             InitializeAzureADApp();
             InitializeWebSiteUri();
             InitializeLoadestSnapshotRepository();
+            InitializeResourceGroupCostEstimateRepository();
 
             InitializeResourceGroupUri();
             InitializeResourceGroupProcessor();
@@ -125,6 +136,14 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn
             this.loadTest.LoadTestStarting += LoadTest_LoadTestStarting;
             this.loadTest.Heartbeat += LoadTest_Heartbeat;
             this.loadTest.LoadTestFinished += LoadTest_LoadTestFinished;
+        }
+
+        private void InitializeResourceGroupCostEstimateRepository()
+        {
+            if (this.loadTest.Context.ContainsKey(RESOURCE_GROUP_COST_ESTIMATE_CONNECTIONSTRING))
+            {
+                this.resourceGroupCostEstimateConnectionString = this.loadTest.Context[RESOURCE_GROUP_COST_ESTIMATE_CONNECTIONSTRING] as string;
+            }
         }
 
         /// <summary>
@@ -144,7 +163,7 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn
         private void InitializeResourceGroupProcessor()
         {
             var resourceGroupGateway = new ResourceGroupGateway(GetAzureADOAuthGateway());
-            this.respurceGroupProcessor = new ResourceGroupProcessor(this.loadTestRun, this.loadTest.Name, resourceGroupGateway, this.loadTestSnapshotRepository);
+            this.respurceGroupProcessor = new ResourceGroupProcessor(this.loadTestRun, this.loadTest.Name, resourceGroupGateway, this.loadTestSnapshotRepository, this.resourceGroupCostEstimateConnectionString);
         }
 
         /// <summary>
@@ -252,6 +271,18 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn
         private void AddLoadTestFinishedSnapshot()
         {
             this.respurceGroupProcessor.CaptureSnapshots(this.resourceGroupUri, "Load Test Complete");
+
+            try
+            { 
+                var resourceGroupCostEstimate = this.respurceGroupProcessor.CalculateCostEstimate();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                System.Diagnostics.Debug.WriteLine(e.StackTrace);
+            }
         }
 
         /// <summary>

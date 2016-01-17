@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Azure.VSO.PaaSEstimator.LoadTestPlugIn.PaaSResources;
 using Azure.VSO.PaaSEstimator.LoadTestPlugIn.Repositories;
+using System.Data.Entity;
 
 namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors.Tests
 {
@@ -34,13 +35,35 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors.Tests
         [TestMethod()]
         public void CaptureSnapshotsTest()
         {
+            string connectionString = "Server=tcp:bobjacp20.database.windows.net,1433;Database=bobjacp20db;User ID=bobjac@bobjacp20;Password=AFw2hawabf!;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+
             ILoadTestSnapshotRepository loadTestSnapshotRepository = GetLoadTestSnapshotRepository();
             var resourceGroupGateway = new ResourceGroupGateway(GetOAuthGateway());
-            var resourceGroupProcessor = new ResourceGroupProcessor(Guid.NewGuid(), "CaptureSnapshotsTest()", resourceGroupGateway, loadTestSnapshotRepository);
+            var resourceGroupProcessor = new ResourceGroupProcessor(Guid.NewGuid(), "CaptureSnapshotsTest()", resourceGroupGateway, loadTestSnapshotRepository, connectionString);
 
             string resourceGroupUri = "https://management.azure.com/subscriptions/7840d2da-7eb0-4caa-a8af-e69f387c3557/resourceGroups/p20?api-version=2014-04-01";
-            
+
             resourceGroupProcessor.CaptureSnapshots(new Uri(resourceGroupUri), "CaptureSnapshotsTest()");
+        }
+
+        [TestMethod()]
+        public void CalculateCostEstimateTest()
+        {
+            //Database.SetInitializer(new DropCreateDatabaseAlways<ResourceGroupEstimateRepository>());
+            string connectionString = "Server=tcp:bobjacp20.database.windows.net,1433;Database=bobjacp20db;User ID=bobjac@bobjacp20;Password=AFw2hawabf!;Encrypt=True;TrustServerCertificate=False;Connection Timeout=90;";
+
+            Guid loadTestRun = Guid.Parse("dee52837-f7ac-4a6e-a034-514bda8e3c6e");
+            string loadTestName = "paasestimatorloadtest";
+
+            double expectedHourly = 0.2920000000072 * 5;
+            double expected = expectedHourly * 24 * 30;
+
+            var resourceGroupGateway = new ResourceGroupGateway(GetOAuthGateway());
+            ILoadTestSnapshotRepository loadTestSnapshotRepository = GetLoadTestSnapshotRepository();
+            var resourceGroupProcessor = new ResourceGroupProcessor(loadTestRun, loadTestName, resourceGroupGateway, loadTestSnapshotRepository, connectionString);
+            var resourceGroupCostEstimate = resourceGroupProcessor.CalculateCostEstimate();
+
+            Assert.AreEqual(expected, resourceGroupCostEstimate.TotalMonthlyEstimate);
         }
     }
 }

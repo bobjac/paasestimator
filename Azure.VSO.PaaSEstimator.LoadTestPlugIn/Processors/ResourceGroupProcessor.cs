@@ -35,6 +35,8 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors
         /// </summary>
         private ILoadTestSnapshotRepository loadTestSnapshotRepository;
 
+        private ResourceGroupEstimateRepository resourceGroupCostEstimateRepository;
+        private string resourceGroupCostEstimateConnectionString;
         /// <summary>
         /// Public constructor
         /// </summary>
@@ -45,12 +47,14 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors
         public ResourceGroupProcessor(Guid loadTestRun, 
             string loadTestName,
             IResourceGroupGateway resourceGroupGateway, 
-            ILoadTestSnapshotRepository loadTestSnapshotRepository)
+            ILoadTestSnapshotRepository loadTestSnapshotRepository,
+            string resourceGroupCostEstimateRepositoryConnectionString)
         {
             this.loadTestRun = loadTestRun;
             this.loadTestName = loadTestName;
             this.resourceGroupGateway = resourceGroupGateway;
             this.loadTestSnapshotRepository = loadTestSnapshotRepository;
+            this.resourceGroupCostEstimateConnectionString = resourceGroupCostEstimateRepositoryConnectionString;
         }
 
         /// <summary>
@@ -131,6 +135,104 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors
                     webSiteProcessor.CaptureSnapshots(uri, captureEvent);
                 }
             }
+        }
+
+        public ResourceGroupCostEstimate CalculateCostEstimate()
+        {
+            var snapshots = this.loadTestSnapshotRepository.GetLoadTestSnapshots(this.loadTestRun.ToString());
+            var orderedResources = (from y in snapshots
+                           group y by y.ResourceId into g
+                           select g.OrderByDescending(o => o.Timestamp));
+
+            var resourceGroupCostEstimate = GetResourceGroupCostEstimate(orderedResources);
+
+            using (var repository = new ResourceGroupEstimateRepository(this.resourceGroupCostEstimateConnectionString))
+            {
+                repository.ResourceGroupCostEstimates.Add(resourceGroupCostEstimate);
+                repository.SaveChanges();
+            }
+            
+            return resourceGroupCostEstimate;
+            //double totalEstimate = 0.0;
+            
+            //foreach (var current in orderedResources.GetOrderedWebsites())
+            //{
+            //    double maxCost = 0.0;
+            //    string ratePeriod = string.Empty;
+
+            //    foreach (var currentSnapshot in current)
+            //    {
+            //        var instanceState = JsonConvert.DeserializeObject<WebSiteData>(currentSnapshot.InstanceState);
+            //        ratePeriod = instanceState.RatePeriod;
+            //        double currentCost = instanceState.Rate * instanceState.InstanceCount;
+            //        if (currentCost > maxCost)
+            //        {
+            //            maxCost = currentCost;
+            //        }
+                    
+            //    }
+
+            //    totalEstimate += maxCost;
+            //}
+
+            //return totalEstimate;
+        }
+
+        private ResourceGroupCostEstimate GetResourceGroupCostEstimate(IEnumerable<IOrderedEnumerable<LoadTestSnapShot>> groupedSnapshots)
+        {
+            var resourceGroupCostEstimate = new ResourceGroupCostEstimate();
+            var webSiteEstimates = GetWebsiteEstimates(groupedSnapshots);
+
+            resourceGroupCostEstimate.TotalMonthlyEstimate = webSiteEstimates.Sum(x => x.CostEstimate);
+            resourceGroupCostEstimate.LoadTestId = this.loadTestRun;
+            //resourceGroupCostEstimate.ResourceEstimates.AddRange(webSiteEstimates);
+
+            webSiteEstimates.ForEach(x => resourceGroupCostEstimate.ResourceEstimates.Add(x));
+
+            double totalHourlyEstimate = resourceGroupCostEstimate.ResourceEstimates.Sum(x => x.CostEstimate);
+            double totalMonthlyEstimate = totalHourlyEstimate * 24 * 30;
+
+            resourceGroupCostEstimate.TotalMonthlyEstimate = totalMonthlyEstimate;
+
+            return resourceGroupCostEstimate;
+        }
+
+        private List<ResourceCostEstimate> GetWebsiteEstimates(IEnumerable<IOrderedEnumerable<LoadTestSnapShot>> groupedSnapshots)
+        {
+            List<ResourceCostEstimate> webSiteCostEstimates = new List<ResourceCostEstimate>();
+
+            //double totalEstimate = 0.0;
+
+            foreach (var current in groupedSnapshots.GetOrderedWebsites())
+            {
+                ResourceCostEstimate webSiteCostEstimate = new ResourceCostEstimate();
+
+                double maxCost = 0.0;
+
+                foreach (var currentSnapshot in current)
+                {
+                    var instanceState = JsonConvert.DeserializeObject<WebSiteData>(currentSnapshot.InstanceState);
+
+                    double currentCost = instanceState.Rate * instanceState.InstanceCount;
+
+                    if (currentCost > maxCost)
+                    {
+                        maxCost = currentCost;
+
+                        webSiteCostEstimate.Rate = instanceState.Rate;
+                        webSiteCostEstimate.Rate = instanceState.InstanceCount;
+                        webSiteCostEstimate.ResourceId = instanceState.WebSiteUri.ToString();
+                        webSiteCostEstimate.CostEstimate = currentCost;
+                        webSiteCostEstimate.RatePeriod = instanceState.RatePeriod;
+                    }
+
+                }
+
+                webSiteCostEstimates.Add(webSiteCostEstimate);
+                //totalEstimate += maxCost;
+            }
+
+            return webSiteCostEstimates;
         }
     }
 }
