@@ -15,7 +15,11 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Models
         public int Instances { get; set; }
         public double CostEstimate { get; set; }
         public string RatePeriod { get; set; }
-        [Timestamp]
-        public byte[] TimeStamp { get; set; }
+        public DateTime TimeStamp { get; set; }
+
+        public ResourceCostEstimate()
+        {
+            this.TimeStamp = DateTime.Now;
+        }
     }
 }

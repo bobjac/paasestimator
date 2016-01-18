@@ -220,7 +220,7 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors
                         maxCost = currentCost;
 
                         webSiteCostEstimate.Rate = instanceState.Rate;
-                        webSiteCostEstimate.Rate = instanceState.InstanceCount;
+                        webSiteCostEstimate.Instances = instanceState.InstanceCount;
                         webSiteCostEstimate.ResourceId = instanceState.WebSiteUri.ToString();
                         webSiteCostEstimate.CostEstimate = currentCost;
                         webSiteCostEstimate.RatePeriod = instanceState.RatePeriod;
