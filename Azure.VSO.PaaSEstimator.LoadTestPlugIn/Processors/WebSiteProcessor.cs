@@ -93,7 +93,6 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors
             string webSiteData = await this.webSiteGateway.GetWebSiteData(webSiteUri);
             dynamic dynWebSiteData = JsonConvert.DeserializeObject(webSiteData);
 
-           // string id = dynWebSiteData.id;
             string serverFarmId = dynWebSiteData.properties.serverFarmId;
             string siteName = dynWebSiteData.properties.name;
 
@@ -240,7 +239,5 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors
 
             this.loadTestSnapshotRepository.AddLoadTestSnapshot(loadTestSnapshot);
         }
-
-        
     }
 }

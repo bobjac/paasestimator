@@ -118,7 +118,6 @@
     <Compile Include="PaaSResources\ServerFarmGateway.cs" />
     <Compile Include="PaaSResources\WebSiteInstancesGateway.cs" />
     <Compile Include="Processors\IPaasResourceProcessor.cs" />
-    <Compile Include="Processors\PaaSResourceProcessorFactory.cs" />
     <Compile Include="Processors\ResourceGroupProcessor.cs" />
     <Compile Include="Processors\WebSiteProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

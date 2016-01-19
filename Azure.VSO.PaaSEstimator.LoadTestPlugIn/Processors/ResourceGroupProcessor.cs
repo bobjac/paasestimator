@@ -153,29 +153,6 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors
             }
             
             return resourceGroupCostEstimate;
-            //double totalEstimate = 0.0;
-            
-            //foreach (var current in orderedResources.GetOrderedWebsites())
-            //{
-            //    double maxCost = 0.0;
-            //    string ratePeriod = string.Empty;
-
-            //    foreach (var currentSnapshot in current)
-            //    {
-            //        var instanceState = JsonConvert.DeserializeObject<WebSiteData>(currentSnapshot.InstanceState);
-            //        ratePeriod = instanceState.RatePeriod;
-            //        double currentCost = instanceState.Rate * instanceState.InstanceCount;
-            //        if (currentCost > maxCost)
-            //        {
-            //            maxCost = currentCost;
-            //        }
-                    
-            //    }
-
-            //    totalEstimate += maxCost;
-            //}
-
-            //return totalEstimate;
         }
 
         private ResourceGroupCostEstimate GetResourceGroupCostEstimate(IEnumerable<IOrderedEnumerable<LoadTestSnapShot>> groupedSnapshots)
@@ -185,7 +162,6 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors
 
             resourceGroupCostEstimate.TotalMonthlyEstimate = webSiteEstimates.Sum(x => x.CostEstimate);
             resourceGroupCostEstimate.LoadTestId = this.loadTestRun;
-            //resourceGroupCostEstimate.ResourceEstimates.AddRange(webSiteEstimates);
 
             webSiteEstimates.ForEach(x => resourceGroupCostEstimate.ResourceEstimates.Add(x));
 
@@ -200,8 +176,6 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors
         private List<ResourceCostEstimate> GetWebsiteEstimates(IEnumerable<IOrderedEnumerable<LoadTestSnapShot>> groupedSnapshots)
         {
             List<ResourceCostEstimate> webSiteCostEstimates = new List<ResourceCostEstimate>();
-
-            //double totalEstimate = 0.0;
 
             foreach (var current in groupedSnapshots.GetOrderedWebsites())
             {
@@ -229,7 +203,6 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors
                 }
 
                 webSiteCostEstimates.Add(webSiteCostEstimate);
-                //totalEstimate += maxCost;
             }
 
             return webSiteCostEstimates;
