@@ -65,18 +65,19 @@ namespace Azure.VSO.PaaSEstimator.LoadTestPlugIn.Processors.Tests
                 {
                     AuthenticationAuthority = "https://login.windows.net",
                     ClientId = "78316e80-f898-43f3-9823-f652d979dc0f",
-                    Key = "+9IaNb9TTwmAkAjayZheZY1ZQJYohWtPCpMrFRmoRcg=",
+                    Key = "2pTqoxSBLRUjubXFTgkFazOwlmSN0e9XPSLe1RJHCEo=",
                     Resource = "https://management.core.windows.net/",
                     TenantId = "4ac2c945-49d5-4b59-8a70-a08dffe43dba"
                 };
             }
-
+           
             return this.oauthGateway;
         }
 
         private ILoadTestSnapshotRepository GetLoadTestSnapshotRepository()
         {
-            string storageAccountConnectionString = "DefaultEndpointsProtocol=https;AccountName=bobjacp20;AccountKey=ydBjzHK3apIFfIXeIY7pau/gwX9zVJyMZrBvdsAkYjJF/2qgCLEMzLb3B9wLB0luBVSlW2KWBh+RaqR42jz/bQ==;BlobEndpoint=https://bobjacp20.blob.core.windows.net/;TableEndpoint=https://bobjacp20.table.core.windows.net/;QueueEndpoint=https://bobjacp20.queue.core.windows.net/;FileEndpoint=https://bobjacp20.file.core.windows.net/";
+            //string storageAccountConnectionString = "DefaultEndpointsProtocol=https;AccountName=bobjacp20;AccountKey=ydBjzHK3apIFfIXeIY7pau/gwX9zVJyMZrBvdsAkYjJF/2qgCLEMzLb3B9wLB0luBVSlW2KWBh+RaqR42jz/bQ==;BlobEndpoint=https://bobjacp20.blob.core.windows.net/;TableEndpoint=https://bobjacp20.table.core.windows.net/;QueueEndpoint=https://bobjacp20.queue.core.windows.net/;FileEndpoint=https://bobjacp20.file.core.windows.net/";
+            string storageAccountConnectionString = "DefaultEndpointsProtocol=https;AccountName=bobjacp20;AccountKey=FS0wgyZGzPCHOKJNoJMwoix+8QEpEtjG/hY6mkEki19rD97ToDZIC22hEf/rZswqdRYSX56qmb/XG5wY5S8piQ==;EndpointSuffix=core.windows.net";
             return new AzureTableLoadTestSnapshotRepository(storageAccountConnectionString);
         }
     }

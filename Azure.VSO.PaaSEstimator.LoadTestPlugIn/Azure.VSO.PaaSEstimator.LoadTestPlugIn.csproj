@@ -92,7 +92,6 @@
     <Compile Include="ARMPaaSResources.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="LoadTestSnapshot.cs" />
-    <Compile Include="Models\Estimate.cs" />
     <Compile Include="Models\RateCardPayload.cs" />
     <Compile Include="Models\Resource.cs" />
     <Compile Include="Models\ResourceGroupCostEstimate.cs" />

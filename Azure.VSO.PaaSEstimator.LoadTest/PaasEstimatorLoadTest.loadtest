@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<LoadTest Name="PaasEstimatorLoadTest" Description="" Owner="" storage="c:\dev\project20\paasestimator\azure.vso.paasestimator.loadtest\paasestimatorloadtest.loadtest" Priority="2147483647" Enabled="true" CssProjectStructure="" CssIteration="" DeploymentItemsEditable="" WorkItemIds="" TraceLevel="None" CurrentRunConfig="Run Settings1" Id="434a77f7-9ab1-4f47-9d7e-1d7dc87070d2" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+<LoadTest Name="PaasEstimatorLoadTest" Description="" Owner="" storage="c:\users\bobjac\desktop\github\paasestimator\azure.vso.paasestimator.loadtest\paasestimatorloadtest.loadtest" Priority="2147483647" Enabled="true" CssProjectStructure="" CssIteration="" DeploymentItemsEditable="" WorkItemIds="" TraceLevel="None" CurrentRunConfig="Run Settings1" Id="434a77f7-9ab1-4f47-9d7e-1d7dc87070d2" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
   <Scenarios>
     <Scenario Name="Scenario2" DelayBetweenIterations="0" PercentNewUsers="0" IPSwitching="false" TestMixType="PercentageOfTestsStarted" ApplyDistributionToPacingDelay="true" MaxTestIterations="0" DisableDuringWarmup="false" DelayStartTime="0" AllowedAgents="">
       <ThinkProfile Value="0.2" Pattern="NormalDistribution" />
@@ -421,7 +421,7 @@
     </CounterSet>
   </CounterSets>
   <RunConfigurations>
-    <RunConfiguration Name="Run Settings1" Description="" ResultsStoreType="Database" TimingDetailsStorage="None" SaveTestLogsOnError="true" SaveTestLogsFrequency="0" MaxErrorDetails="200" MaxErrorsPerType="1000" MaxThresholdViolations="1000" MaxRequestUrlsReported="1000" UseTestIterations="false" RunDuration="3600" WarmupTime="0" CoolDownTime="0" TestIterations="100" WebTestConnectionModel="ConnectionPerUser" WebTestConnectionPoolSize="50" SampleRate="15" ValidationLevel="High" SqlTracingConnectString="" SqlTracingConnectStringDisplayValue="" SqlTracingDirectory="" SqlTracingEnabled="false" SqlTracingFileCount="2" SqlTracingRolloverEnabled="true" SqlTracingMinimumDuration="500" RunUnitTestsInAppDomain="true" CoreCount="0" UseMultipleIPs="false" TestAgentConfiguration="Default" AgentDiagnosticsLevel="Warning">
+    <RunConfiguration Name="Run Settings1" Description="" ResultsStoreType="Database" TimingDetailsStorage="None" SaveTestLogsOnError="true" SaveTestLogsFrequency="0" MaxErrorDetails="200" MaxErrorsPerType="1000" MaxThresholdViolations="1000" MaxRequestUrlsReported="1000" UseTestIterations="false" RunDuration="3600" WarmupTime="0" CoolDownTime="0" TestIterations="100" WebTestConnectionModel="ConnectionPerUser" WebTestConnectionPoolSize="50" SampleRate="15" ValidationLevel="High" SqlTracingConnectString="" SqlTracingConnectStringDisplayValue="" SqlTracingDirectory="" SqlTracingEnabled="false" SqlTracingFileCount="2" SqlTracingRolloverEnabled="true" SqlTracingMinimumDuration="500" RunUnitTestsInAppDomain="true" CoreCount="0" ResourcesRetentionTimeInMinutes="0" UseMultipleIPs="false" TestAgentConfiguration="Default" AgentDiagnosticsLevel="Warning">
       <CounterSetMappings>
         <CounterSetMapping ComputerName="[CONTROLLER MACHINE]">
           <CounterSetReferences>
@@ -440,12 +440,12 @@
       </LoadGeneratorLocations>
       <ContextParameters>
         <ContextParameter Name="SiteUri" Value="https://management.azure.com/subscriptions/7840d2da-7eb0-4caa-a8af-e69f387c3557/resourceGroups/p20/providers/Microsoft.Web/sites/bobjacp20-1?api-version=2015-08-01" />
-        <ContextParameter Name="StorageAccountConnectionString" Value="DefaultEndpointsProtocol=https;AccountName=bobjacp20;AccountKey=ydBjzHK3apIFfIXeIY7pau/gwX9zVJyMZrBvdsAkYjJF/2qgCLEMzLb3B9wLB0luBVSlW2KWBh+RaqR42jz/bQ==;BlobEndpoint=https://bobjacp20.blob.core.windows.net/;TableEndpoint=https://bobjacp20.table.core.windows.net/;QueueEndpoint=https://bobjacp20.queue.core.windows.net/;FileEndpoint=https://bobjacp20.file.core.windows.net/" />
+        <ContextParameter Name="StorageAccountConnectionString" Value="DefaultEndpointsProtocol=https;AccountName=bobjacp20;AccountKey=FS0wgyZGzPCHOKJNoJMwoix+8QEpEtjG/hY6mkEki19rD97ToDZIC22hEf/rZswqdRYSX56qmb/XG5wY5S8piQ==;EndpointSuffix=core.windows.net" />
         <ContextParameter Name="ClientId" Value="78316e80-f898-43f3-9823-f652d979dc0f" />
-        <ContextParameter Name="ClientKey" Value="+9IaNb9TTwmAkAjayZheZY1ZQJYohWtPCpMrFRmoRcg=" />
+        <ContextParameter Name="ClientKey" Value="2pTqoxSBLRUjubXFTgkFazOwlmSN0e9XPSLe1RJHCEo=" />
         <ContextParameter Name="TenantId" Value="4ac2c945-49d5-4b59-8a70-a08dffe43dba" />
         <ContextParameter Name="ResourceGroupUri" Value="https://management.azure.com/subscriptions/7840d2da-7eb0-4caa-a8af-e69f387c3557/resourceGroups/p20?api-version=2014-04-01" />
-        <ContextParameter Name="ResourceGroupCostEstimateConnectionString" Value="Server=tcp:bobjacp20.database.windows.net,1433;Database=bobjacp20db;User ID=bobjac@bobjacp20;Password=AFw2hawabf!;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" />
+        <ContextParameter Name="ResourceGroupCostEstimateConnectionString" Value="Server=tcp:bobjacp20.database.windows.net,1433;Initial Catalog=bobjacp20;Persist Security Info=False;User ID=bobjac;Password=P@ssw0rd1;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" />
       </ContextParameters>
     </RunConfiguration>
   </RunConfigurations>
