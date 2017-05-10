@@ -7,9 +7,9 @@ This sample creates proper interfaces to support multiple elastic resources, sto
 
 ## Project Setup
 The solution is broken into 3 projects.  
-    - Azure.VSO.PaaSEstimator.LoadTestPlugin 
-    - Azure.VSO.PaaSEstimator.LoadTestPluginTests
-    - Azure.VSO.PaaSEstimator.LoadTest
+    - Azure.VSO.PaaSEstimator.LoadTestPlugin\n
+    - Azure.VSO.PaaSEstimator.LoadTestPluginTests\n
+    - Azure.VSO.PaaSEstimator.LoadTest\n
 
 The core project is found in Azure.VSO.PaaSEstimator.LoadTestPlugin and contains all plugin code.  Processors, found in the corresponing folder are used to coordinate the estimation of the corresponding Azure resource.  An Azure Webapp is the only resource available at the time, but it serves as a sample of all other elastic scale resources in Azure.  The PaaSResources folder is used to abstract the REST API calls to Azure Resource Manager.  The Repositories folder is used to store estimate data and temporary data during the load test run.
 
